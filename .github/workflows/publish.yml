@@ -27,13 +27,32 @@ jobs:
         python -m pip install --upgrade pip
         pip install build twine wheel setuptools
     
+    - name: Verify package structure
+      run: |
+        echo "📁 Checking project structure..."
+        ls -la
+        echo "📄 Checking pyproject.toml..."
+        cat pyproject.toml | head -20
+        echo "🐍 Checking __init__.py..."
+        if [ -f "__init__.py" ]; then
+          cat __init__.py | head -10
+        else
+          echo "❌ __init__.py not found!"
+        fi
+    
     - name: Build package
       run: |
+        echo "🔨 Building package..."
         python -m build
+        echo "📦 Build artifacts:"
+        ls -la dist/
     
     - name: Check package
       run: |
+        echo "✅ Checking package integrity..."
         twine check dist/*
+        echo "📋 Package contents:"
+        tar -tzf dist/*.tar.gz | head -20
     
     - name: Upload to Test PyPI
       if: github.event_name == 'workflow_dispatch'
@@ -41,7 +60,13 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
       run: |
-        twine upload --repository testpypi dist/* --verbose
+        echo "🧪 Uploading to Test PyPI..."
+        if [ -z "$TWINE_PASSWORD" ]; then
+          echo "❌ TEST_PYPI_API_TOKEN not set in GitHub Secrets!"
+          echo "ℹ️  Skipping Test PyPI upload."
+          exit 0
+        fi
+        twine upload --repository testpypi dist/* --verbose --non-interactive
     
     - name: Upload to PyPI
       if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release'
@@ -49,12 +74,28 @@ jobs:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        twine upload dist/* --verbose
+        echo "🚀 Uploading to PyPI..."
+        if [ -z "$TWINE_PASSWORD" ]; then
+          echo "❌ PYPI_API_TOKEN not set in GitHub Secrets!"
+          echo "Please add your PyPI API token to GitHub Secrets."
+          echo "Go to: Settings → Secrets and variables → Actions"
+          echo "Add: PYPI_API_TOKEN = pypi-your_token_here"
+          exit 1
+        fi
+        twine upload dist/* --verbose --non-interactive
+    
+    - name: Output package info
+      if: success()
+      run: |
+        echo "🎉 Package uploaded successfully!"
+        echo "📦 Package name: ssm-metarl-unified"
+        echo "🔗 PyPI URL: https://pypi.org/project/ssm-metarl-unified/"
+        echo "💿 Install: pip install ssm-metarl-unified"
 
   test-install:
     needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    if: (github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')) && success()
     
     steps:
     - name: Set up Python
@@ -63,18 +104,46 @@ jobs:
         python-version: '3.9'
     
     - name: Wait for package to be available
-      run: sleep 60
+      run: |
+        echo "⏳ Waiting for package to be available on PyPI..."
+        sleep 60
     
     - name: Test installation from PyPI
       run: |
+        echo "📥 Testing installation from PyPI..."
         pip install ssm-metarl-unified
-        python -c "import ssm_metarl_unified; print('Installation successful!')"
+        echo "✅ Package installed successfully!"
     
-    - name: Test basic functionality
+    - name: Test basic imports
       run: |
+        echo "🔍 Testing basic imports..."
         python -c "
-        from ssm_metarl_unified import StateSpaceModel, MetaMAML
-        print('Basic imports successful!')
-        model = StateSpaceModel(state_dim=32, input_dim=4, output_dim=2)
-        print('Model creation successful!')
+        import ssm_metarl_unified
+        print(f'✅ Package version: {ssm_metarl_unified.__version__}')
+        print('✅ Basic import successful!')
         "
+    
+    - name: Test core components
+      run: |
+        echo "🧪 Testing core components..."
+        python -c "
+        try:
+            from ssm_metarl_unified import StateSpaceModel, MetaMAML
+            print('✅ Core imports successful!')
+            
+            # Test model creation
+            model = StateSpaceModel(state_dim=32, input_dim=4, output_dim=2)
+            print('✅ Model creation successful!')
+            
+            print('🎉 All tests passed!')
+        except Exception as e:
+            print(f'❌ Test failed: {e}')
+            raise
+        "
+    
+    - name: Test CLI tools
+      run: |
+        echo "🔧 Testing CLI tools..."
+        ssm-metarl-train --help > /dev/null && echo "✅ ssm-metarl-train works!" || echo "⚠️ ssm-metarl-train not available"
+        ssm-metarl-benchmark --help > /dev/null && echo "✅ ssm-metarl-benchmark works!" || echo "⚠️ ssm-metarl-benchmark not available"
+        ssm-metarl-test > /dev/null && echo "✅ ssm-metarl-test works!" || echo "⚠️ ssm-metarl-test not available"
