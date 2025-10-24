@@ -88,7 +88,7 @@ The demo notebook includes:
 ## ⚡ Quick Start
 
 
-### 🐳 Option 2: Docker
+### 🐳 Option 1: Docker
 
 **For development and experimentation:**
 
@@ -125,7 +125,7 @@ docker run --rm ssm-metarl-unified python experiments/serious_benchmark.py \
 docker run --rm ssm-metarl-unified python test_integration.py
 ```
 
-### 📦 Option 3: Local Development Installation
+### 📦 Option 2: Local Development Installation
 
 ```bash
 # Clone the unified repository
