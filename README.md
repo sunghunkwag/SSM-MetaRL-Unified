@@ -4,7 +4,6 @@
 
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/sunghunkwag/SSM-MetaRL-Unified)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
-[![PyPI](https://img.shields.io/pypi/v/ssm-metarl-unified)](https://pypi.org/project/ssm-metarl-unified/)
 [![Docker](https://img.shields.io/badge/docker-supported-blue)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sunghunkwag/SSM-MetaRL-Unified/blob/master/demo.ipynb)
