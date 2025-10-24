@@ -4,6 +4,7 @@
 
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/sunghunkwag/SSM-MetaRL-Unified)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/docker-supported-blue)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sunghunkwag/SSM-MetaRL-Unified/blob/master/demo.ipynb)
 
@@ -27,6 +28,7 @@ This unified repository merges these two projects, allowing researchers to seaml
     -   `hybrid`: **Experience-augmented adaptation** using a hybrid loss that combines current data with past experiences from a replay buffer.
 -   **Modular & Extensible**: Cleanly separated modules for models, meta-learning, adaptation, and experience replay.
 -   **SOTA Benchmarks**: Includes high-dimensional MuJoCo tasks to validate performance against baselines like LSTM, GRU, and Transformer.
+-   **Docker Support**: Pre-configured container for easy deployment and reproducible experiments.
 -   **Colab Integration**: An interactive demo notebook to explore the framework's capabilities without local installation.
 
 ---
@@ -61,6 +63,7 @@ The integration combines the strengths of both original repositories into a sing
 │   └── test_integration.py # New integration tests for both modes
 ├── main.py                   # Main script with dual adaptation modes
 ├── demo.ipynb                # Interactive Colab demo
+├── Dockerfile                # Docker configuration for easy deployment
 └── pyproject.toml            # Unified project configuration
 ```
 
@@ -82,9 +85,46 @@ The demo notebook includes:
 
 ---
 
-## ⚡ Quick Start (Local Installation)
+## ⚡ Quick Start
 
-### Installation
+### 🐳 Option 1: Docker (Recommended)
+
+**The fastest way to get started!** No complex dependency management required.
+
+```bash
+# Clone the repository
+git clone https://github.com/sunghunkwag/SSM-MetaRL-Unified.git
+cd SSM-MetaRL-Unified
+
+# Build the Docker image
+docker build -t ssm-metarl-unified .
+
+# Run standard adaptation mode
+docker run --rm ssm-metarl-unified python main.py \
+    --env_name CartPole-v1 \
+    --adaptation_mode standard \
+    --num_epochs 10
+
+# Run hybrid adaptation mode (experience-augmented)
+docker run --rm ssm-metarl-unified python main.py \
+    --env_name CartPole-v1 \
+    --adaptation_mode hybrid \
+    --num_epochs 10 \
+    --buffer_size 5000 \
+    --experience_weight 0.2
+
+# Run benchmarks
+docker run --rm ssm-metarl-unified python experiments/serious_benchmark.py \
+    --task halfcheetah-vel \
+    --method ssm \
+    --adaptation_mode hybrid \
+    --epochs 50
+
+# Run integration tests
+docker run --rm ssm-metarl-unified python test_integration.py
+```
+
+### 📦 Option 2: Local Installation
 
 ```bash
 # Clone the unified repository
@@ -123,7 +163,11 @@ python main.py --env_name CartPole-v1 --adaptation_mode hybrid --num_epochs 10 -
 We have included a new test script to verify that all integrated components work correctly.
 
 ```bash
+# Local installation
 python test_integration.py
+
+# Or with Docker
+docker run --rm ssm-metarl-unified python test_integration.py
 ```
 
 This will run a series of tests to confirm:
@@ -137,20 +181,30 @@ This will run a series of tests to confirm:
 
 The `serious_benchmark.py` script has been updated to support both adaptation modes, allowing for a direct comparison of their effectiveness on challenging, high-dimensional tasks.
 
-### Prerequisites
+### Prerequisites (Local Installation Only)
 
-To run the MuJoCo-based benchmarks, you need to install the necessary dependencies:
+To run the MuJoCo-based benchmarks locally, you need to install the necessary dependencies:
 
 ```bash
 pip install 'gymnasium[mujoco]'
 ```
+
+**Note**: Docker image already includes all required dependencies!
 
 ### Running Benchmarks
 
 **1. Standard Adaptation Benchmark**
 
 ```bash
+# Local
 python experiments/serious_benchmark.py \
+    --task halfcheetah-vel \
+    --method ssm \
+    --adaptation_mode standard \
+    --epochs 50
+
+# Docker
+docker run --rm ssm-metarl-unified python experiments/serious_benchmark.py \
     --task halfcheetah-vel \
     --method ssm \
     --adaptation_mode standard \
@@ -162,7 +216,17 @@ python experiments/serious_benchmark.py \
 Compare the performance with experience replay enabled.
 
 ```bash
+# Local
 python experiments/serious_benchmark.py \
+    --task halfcheetah-vel \
+    --method ssm \
+    --adaptation_mode hybrid \
+    --epochs 50 \
+    --buffer_size 20000 \
+    --experience_weight 0.1
+
+# Docker
+docker run --rm ssm-metarl-unified python experiments/serious_benchmark.py \
     --task halfcheetah-vel \
     --method ssm \
     --adaptation_mode hybrid \
@@ -218,6 +282,37 @@ This unified framework introduces several new arguments to control the adaptatio
 
 ---
 
+## 🐳 Docker Configuration
+
+The included `Dockerfile` provides a complete, reproducible environment:
+
+- **Multi-stage build**: Optimized image size using builder pattern
+- **Python 3.9**: Stable Python version with all required packages
+- **Pre-installed dependencies**: All ML/RL libraries ready to use
+- **Health check**: Container health monitoring
+- **Development ready**: Includes all source code and test scripts
+
+### Docker Commands Summary
+
+```bash
+# Build image
+docker build -t ssm-metarl-unified .
+
+# Basic run (shows help)
+docker run --rm ssm-metarl-unified
+
+# Standard mode example
+docker run --rm ssm-metarl-unified python main.py --adaptation_mode standard
+
+# Hybrid mode example  
+docker run --rm ssm-metarl-unified python main.py --adaptation_mode hybrid
+
+# Interactive mode (for development)
+docker run -it --rm ssm-metarl-unified bash
+```
+
+---
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -234,4 +329,3 @@ If you use this unified framework in your research, please consider citing the o
   url = {https://github.com/sunghunkwag/SSM-MetaRL-Unified}
 }
 ```
-
