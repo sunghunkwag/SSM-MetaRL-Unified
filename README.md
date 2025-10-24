@@ -5,7 +5,7 @@
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/sunghunkwag/SSM-MetaRL-Unified)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sunghunkwag/SSM-MetaRL-Unified/blob/main/demo.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sunghunkwag/SSM-MetaRL-Unified/blob/master/demo.ipynb)
 
 ---
 
@@ -66,7 +66,23 @@ The integration combines the strengths of both original repositories into a sing
 
 ---
 
-## ⚡ Quick Start
+## 🚀 Try it Now in Google Colab!
+
+**No installation required!** Click the badge below to run the interactive demo in your browser:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sunghunkwag/SSM-MetaRL-Unified/blob/master/demo.ipynb)
+
+The demo notebook includes:
+- ✅ Complete setup and installation
+- ✅ Meta-training with MetaMAML
+- ✅ Standard adaptation mode (baseline)
+- ✅ Hybrid adaptation mode (experience-augmented)
+- ✅ Side-by-side comparison with visualizations
+- ✅ Interactive exploration of the framework
+
+---
+
+## ⚡ Quick Start (Local Installation)
 
 ### Installation
 
