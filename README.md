@@ -4,6 +4,7 @@
 
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/sunghunkwag/SSM-MetaRL-Unified)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
+[![PyPI](https://img.shields.io/pypi/v/ssm-metarl-unified)](https://pypi.org/project/ssm-metarl-unified/)
 [![Docker](https://img.shields.io/badge/docker-supported-blue)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/sunghunkwag/SSM-MetaRL-Unified/blob/master/demo.ipynb)
@@ -29,6 +30,7 @@ This unified repository merges these two projects, allowing researchers to seaml
 -   **Modular & Extensible**: Cleanly separated modules for models, meta-learning, adaptation, and experience replay.
 -   **SOTA Benchmarks**: Includes high-dimensional MuJoCo tasks to validate performance against baselines like LSTM, GRU, and Transformer.
 -   **Docker Support**: Pre-configured container for easy deployment and reproducible experiments.
+-   **PyPI Package**: Easy installation via `pip install ssm-metarl-unified`
 -   **Colab Integration**: An interactive demo notebook to explore the framework's capabilities without local installation.
 
 ---
@@ -87,9 +89,49 @@ The demo notebook includes:
 
 ## ⚡ Quick Start
 
-### 🐳 Option 1: Docker (Recommended)
+### 📦 Option 1: PyPI Installation (Recommended)
 
-**The fastest way to get started!** No complex dependency management required.
+**The easiest way to get started!** Install directly from PyPI:
+
+```bash
+# Install the core package
+pip install ssm-metarl-unified
+
+# Or install with all dependencies for experiments
+pip install ssm-metarl-unified[all]
+
+# For MuJoCo benchmarks only
+pip install ssm-metarl-unified[mujoco]
+```
+
+**Quick Python Usage:**
+```python
+# Import the framework
+from ssm_metarl_unified import StateSpaceModel, MetaMAML, StandardAdapter, HybridAdapter
+
+# Create a State Space Model
+model = StateSpaceModel(state_dim=32, input_dim=4, output_dim=2, hidden_dim=64)
+
+# Use with Meta-Learning
+meta_learner = MetaMAML(model=model, inner_lr=0.01, outer_lr=0.001)
+```
+
+**Console Commands:**
+After installation, you can use the CLI tools:
+```bash
+# Train a model
+ssm-metarl-train --adaptation_mode hybrid --num_epochs 50
+
+# Run benchmarks
+ssm-metarl-benchmark --task halfcheetah-vel --method ssm
+
+# Run tests
+ssm-metarl-test
+```
+
+### 🐳 Option 2: Docker
+
+**For development and experimentation:**
 
 ```bash
 # Clone the repository
@@ -124,18 +166,18 @@ docker run --rm ssm-metarl-unified python experiments/serious_benchmark.py \
 docker run --rm ssm-metarl-unified python test_integration.py
 ```
 
-### 📦 Option 2: Local Installation
+### 📦 Option 3: Local Development Installation
 
 ```bash
 # Clone the unified repository
 git clone https://github.com/sunghunkwag/SSM-MetaRL-Unified.git
 cd SSM-MetaRL-Unified
 
-# Install the package in editable mode
-pip install -e .
-
-# For development (including testing dependencies)
+# Install in editable mode for development
 pip install -e .[dev]
+
+# Or install all dependencies
+pip install -e .[all]
 ```
 
 ### Running the Main Script
@@ -168,6 +210,9 @@ python test_integration.py
 
 # Or with Docker
 docker run --rm ssm-metarl-unified python test_integration.py
+
+# Or using the CLI
+ssm-metarl-test
 ```
 
 This will run a series of tests to confirm:
@@ -186,16 +231,21 @@ The `serious_benchmark.py` script has been updated to support both adaptation mo
 To run the MuJoCo-based benchmarks locally, you need to install the necessary dependencies:
 
 ```bash
+pip install ssm-metarl-unified[mujoco]
+# or
 pip install 'gymnasium[mujoco]'
 ```
 
-**Note**: Docker image already includes all required dependencies!
+**Note**: Docker image and PyPI package already include all required dependencies!
 
 ### Running Benchmarks
 
 **1. Standard Adaptation Benchmark**
 
 ```bash
+# PyPI package
+ssm-metarl-benchmark --task halfcheetah-vel --method ssm --adaptation_mode standard --epochs 50
+
 # Local
 python experiments/serious_benchmark.py \
     --task halfcheetah-vel \
@@ -216,6 +266,9 @@ docker run --rm ssm-metarl-unified python experiments/serious_benchmark.py \
 Compare the performance with experience replay enabled.
 
 ```bash
+# PyPI package
+ssm-metarl-benchmark --task halfcheetah-vel --method ssm --adaptation_mode hybrid --epochs 50 --buffer_size 20000 --experience_weight 0.1
+
 # Local
 python experiments/serious_benchmark.py \
     --task halfcheetah-vel \
@@ -313,6 +366,39 @@ docker run -it --rm ssm-metarl-unified bash
 
 ---
 
+## 📦 Distribution & Installation
+
+This package is available on [PyPI](https://pypi.org/project/ssm-metarl-unified/) and supports multiple installation methods:
+
+### Installation Options
+
+- **Basic**: `pip install ssm-metarl-unified`
+- **With MuJoCo**: `pip install ssm-metarl-unified[mujoco]`
+- **With Experiments**: `pip install ssm-metarl-unified[experiments]`
+- **Full Installation**: `pip install ssm-metarl-unified[all]`
+- **Development**: `pip install ssm-metarl-unified[dev]`
+
+### CLI Tools
+
+After installation, the following command-line tools become available:
+
+- `ssm-metarl-train`: Main training script
+- `ssm-metarl-benchmark`: Benchmark runner
+- `ssm-metarl-test`: Integration tests
+
+### Python API
+
+```python
+import ssm_metarl_unified as ssm
+
+# Access all core components
+model = ssm.StateSpaceModel(...)
+meta_learner = ssm.MetaMAML(...)
+adapter = ssm.HybridAdapter(...)
+```
+
+---
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -326,6 +412,7 @@ If you use this unified framework in your research, please consider citing the o
   author = {Manus AI},
   title = {SSM-MetaRL-Unified: A Framework for Experience-Augmented Meta-RL},
   year = {2025},
-  url = {https://github.com/sunghunkwag/SSM-MetaRL-Unified}
+  url = {https://github.com/sunghunkwag/SSM-MetaRL-Unified},
+  note = {PyPI: https://pypi.org/project/ssm-metarl-unified/}
 }
 ```
