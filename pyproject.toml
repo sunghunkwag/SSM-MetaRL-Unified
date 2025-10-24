@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Sunghun Kwag", email = "sunghunkwag@example.com"}
+    {name = "Manus AI", email = "ai@manus.im"}
 ]
 keywords = [
     "reinforcement-learning",
@@ -21,7 +21,7 @@ keywords = [
     "meta-rl"
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -46,12 +46,22 @@ dev = [
     "black>=22.0.0",
     "flake8>=4.0.0",
 ]
+mujoco = [
+    "gymnasium[mujoco]>=0.26.0",
+]
+all = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+    "gymnasium[mujoco]>=0.26.0",
+    "matplotlib>=3.5.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/sunghunkwag/SSM-MetaRL-Unified"
 Repository = "https://github.com/sunghunkwag/SSM-MetaRL-Unified"
 "Bug Tracker" = "https://github.com/sunghunkwag/SSM-MetaRL-Unified/issues"
-Documentation = "https://github.com/sunghunkwag/SSM-MetaRL-Unified/blob/main/README.md"
+Documentation = "https://github.com/sunghunkwag/SSM-MetaRL-Unified/blob/master/README.md"
 
 [tool.setuptools.packages.find]
 where = ["."]  

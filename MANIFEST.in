@@ -1,0 +1,20 @@
+include README.md
+include LICENSE
+include pyproject.toml
+include ARCHITECTURE.md
+include PROJECT_SUMMARY.md
+
+recursive-include core *.py
+recursive-include meta_rl *.py
+recursive-include env_runner *.py
+recursive-include adaptation *.py
+recursive-include experience *.py
+
+exclude test_integration.py
+exclude main.py
+recursive-exclude tests *
+recursive-exclude experiments *
+recursive-exclude .git *
+recursive-exclude __pycache__ *
+recursive-exclude *.egg-info *
+

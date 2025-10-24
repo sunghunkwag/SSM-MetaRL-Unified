@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  ssm-metarl-unified:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ssm-metarl-unified:latest
+    container_name: ssm-metarl-unified
+    
+    # Resource limits (adjust as needed)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+        reservations:
+          cpus: '2'
+          memory: 2G
+    
+    # Environment variables
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OMP_NUM_THREADS=4
+    
+    # Volume mounts for results
+    volumes:
+      - ./results:/app/results
+      - ./checkpoints:/app/checkpoints
+    
+    # Override command to run specific script
+    # Example: docker-compose run ssm-metarl-unified python main.py --adaptation_mode hybrid
+    command: python main.py --help
+
+  # Service for running tests
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ssm-metarl-unified:latest
+    container_name: ssm-metarl-test
+    command: python test_integration.py
+    
+  # Service for running benchmarks
+  benchmark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ssm-metarl-unified:latest
+    container_name: ssm-metarl-benchmark
+    volumes:
+      - ./results:/app/results
+    command: python experiments/quick_benchmark.py
+
