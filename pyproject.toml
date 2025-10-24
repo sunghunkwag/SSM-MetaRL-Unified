@@ -12,13 +12,21 @@ license = {text = "MIT"}
 authors = [
     {name = "Manus AI", email = "ai@manus.im"}
 ]
+maintainers = [
+    {name = "Sung Hun Kwag", email = "sunghunkwag@gmail.com"}
+]
 keywords = [
     "reinforcement-learning",
     "meta-learning",
     "state-space-models",
     "test-time-adaptation",
     "ssm",
-    "meta-rl"
+    "meta-rl",
+    "experience-replay",
+    "maml",
+    "pytorch",
+    "gymnasium",
+    "mujoco"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -32,6 +40,9 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Environment :: Console",
 ]
 
 dependencies = [
@@ -45,25 +56,77 @@ dev = [
     "pytest>=7.0.0",
     "black>=22.0.0",
     "flake8>=4.0.0",
+    "build>=0.8.0",
+    "twine>=4.0.0",
 ]
 mujoco = [
     "gymnasium[mujoco]>=0.26.0",
+]
+experiments = [
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+    "pandas>=1.3.0",
 ]
 all = [
     "pytest>=7.0.0",
     "black>=22.0.0",
     "flake8>=4.0.0",
+    "build>=0.8.0",
+    "twine>=4.0.0",
     "gymnasium[mujoco]>=0.26.0",
     "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+    "pandas>=1.3.0",
 ]
+
+[project.scripts]
+ssm-metarl-train = "main:main"
+ssm-metarl-benchmark = "experiments.serious_benchmark:main"
+ssm-metarl-test = "test_integration:main"
 
 [project.urls]
 Homepage = "https://github.com/sunghunkwag/SSM-MetaRL-Unified"
 Repository = "https://github.com/sunghunkwag/SSM-MetaRL-Unified"
 "Bug Tracker" = "https://github.com/sunghunkwag/SSM-MetaRL-Unified/issues"
 Documentation = "https://github.com/sunghunkwag/SSM-MetaRL-Unified/blob/master/README.md"
+"Changelog" = "https://github.com/sunghunkwag/SSM-MetaRL-Unified/releases"
+"PyPI" = "https://pypi.org/project/ssm-metarl-unified/"
 
 [tool.setuptools.packages.find]
 where = ["."]  
 include = ["core", "core.*", "meta_rl", "meta_rl.*", "env_runner", "env_runner.*", "adaptation", "adaptation.*", "experience", "experience.*"]
 exclude = ["tests", "tests.*", "experiments", "experiments.*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.txt", "*.yml", "*.yaml"]
+
+# Development tool configurations
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = "-v --tb=short"
+minversion = "7.0"
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [".git", "__pycache__", "build", "dist", ".eggs"]
