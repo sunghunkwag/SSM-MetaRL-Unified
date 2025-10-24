@@ -364,18 +364,11 @@ docker run -it --rm ssm-metarl-unified bash
 ```
 
 ---
+## 📦 Installation
 
-## 📦 Distribution & Installation
+### From GitHub (Recommended)
 
-This package is available on [PyPI](https://pypi.org/project/ssm-metarl-unified/) and supports multiple installation methods:
 
-### Installation Options
-
-- **Basic**: `pip install ssm-metarl-unified`
-- **With MuJoCo**: `pip install ssm-metarl-unified[mujoco]`
-- **With Experiments**: `pip install ssm-metarl-unified[experiments]`
-- **Full Installation**: `pip install ssm-metarl-unified[all]`
-- **Development**: `pip install ssm-metarl-unified[dev]`
 
 ### CLI Tools
 
