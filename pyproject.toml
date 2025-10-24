@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ssm-metarl-unified"
+version = "1.0.0"
+description = "Unified State Space Models for Meta-RL with Experience-Augmented Test-Time Adaptation"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Sunghun Kwag", email = "sunghunkwag@example.com"}
+]
+keywords = [
+    "reinforcement-learning",
+    "meta-learning",
+    "state-space-models",
+    "test-time-adaptation",
+    "ssm",
+    "meta-rl"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "numpy>=1.20.0",
+    "torch>=1.9.0",
+    "gymnasium>=0.26.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=22.0.0",
+    "flake8>=4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/sunghunkwag/SSM-MetaRL-Unified"
+Repository = "https://github.com/sunghunkwag/SSM-MetaRL-Unified"
+"Bug Tracker" = "https://github.com/sunghunkwag/SSM-MetaRL-Unified/issues"
+Documentation = "https://github.com/sunghunkwag/SSM-MetaRL-Unified/blob/main/README.md"
+
+[tool.setuptools.packages.find]
+where = ["."]  
+include = ["core", "core.*", "meta_rl", "meta_rl.*", "env_runner", "env_runner.*", "adaptation", "adaptation.*", "experience", "experience.*"]
+exclude = ["tests", "tests.*", "experiments", "experiments.*"]
