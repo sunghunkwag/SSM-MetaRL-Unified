@@ -29,7 +29,6 @@ This unified repository merges these two projects, allowing researchers to seaml
 -   **Modular & Extensible**: Cleanly separated modules for models, meta-learning, adaptation, and experience replay.
 -   **SOTA Benchmarks**: Includes high-dimensional MuJoCo tasks to validate performance against baselines like LSTM, GRU, and Transformer.
 -   **Docker Support**: Pre-configured container for easy deployment and reproducible experiments.
--   **PyPI Package**: Easy installation via `pip install ssm-metarl-unified`
 -   **Colab Integration**: An interactive demo notebook to explore the framework's capabilities without local installation.
 
 ---
@@ -88,45 +87,6 @@ The demo notebook includes:
 
 ## ⚡ Quick Start
 
-### 📦 Option 1: PyPI Installation (Recommended)
-
-**The easiest way to get started!** Install directly from PyPI:
-
-```bash
-# Install the core package
-pip install ssm-metarl-unified
-
-# Or install with all dependencies for experiments
-pip install ssm-metarl-unified[all]
-
-# For MuJoCo benchmarks only
-pip install ssm-metarl-unified[mujoco]
-```
-
-**Quick Python Usage:**
-```python
-# Import the framework
-from ssm_metarl_unified import StateSpaceModel, MetaMAML, StandardAdapter, HybridAdapter
-
-# Create a State Space Model
-model = StateSpaceModel(state_dim=32, input_dim=4, output_dim=2, hidden_dim=64)
-
-# Use with Meta-Learning
-meta_learner = MetaMAML(model=model, inner_lr=0.01, outer_lr=0.001)
-```
-
-**Console Commands:**
-After installation, you can use the CLI tools:
-```bash
-# Train a model
-ssm-metarl-train --adaptation_mode hybrid --num_epochs 50
-
-# Run benchmarks
-ssm-metarl-benchmark --task halfcheetah-vel --method ssm
-
-# Run tests
-ssm-metarl-test
-```
 
 ### 🐳 Option 2: Docker
 
@@ -235,14 +195,14 @@ pip install ssm-metarl-unified[mujoco]
 pip install 'gymnasium[mujoco]'
 ```
 
-**Note**: Docker image and PyPI package already include all required dependencies!
+**Note**: Docker image already include all required dependencies!
 
 ### Running Benchmarks
 
 **1. Standard Adaptation Benchmark**
 
 ```bash
-# PyPI package
+
 ssm-metarl-benchmark --task halfcheetah-vel --method ssm --adaptation_mode standard --epochs 50
 
 # Local
@@ -265,7 +225,7 @@ docker run --rm ssm-metarl-unified python experiments/serious_benchmark.py \
 Compare the performance with experience replay enabled.
 
 ```bash
-# PyPI package
+
 ssm-metarl-benchmark --task halfcheetah-vel --method ssm --adaptation_mode hybrid --epochs 50 --buffer_size 20000 --experience_weight 0.1
 
 # Local
@@ -405,6 +365,5 @@ If you use this unified framework in your research, please consider citing the o
   title = {SSM-MetaRL-Unified: A Framework for Experience-Augmented Meta-RL},
   year = {2025},
   url = {https://github.com/sunghunkwag/SSM-MetaRL-Unified},
-  note = {PyPI: https://pypi.org/project/ssm-metarl-unified/}
 }
 ```
