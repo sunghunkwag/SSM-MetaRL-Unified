@@ -1,0 +1,44 @@
+
+============================================================
+Device: cpu
+============================================================
+
+Model Architecture:
+  Input Dim: 4
+  Output Dim: 4
+  State Dim: 32
+  Hidden Dim: 64
+
+
+=== Starting Meta-RL Training with MAML ===
+Environment: CartPole-v1
+Epochs: 50
+Tasks per epoch: 5
+Adaptation mode: hybrid
+============================================================
+Epoch    0: Meta-Loss=  0.6901, Avg Reward=  18.8, Recent=  18.8, Buffer=94
+Epoch   10: Meta-Loss=  0.5908, Avg Reward=  15.8, Recent=  16.7, Buffer=931
+Epoch   20: Meta-Loss=  0.6144, Avg Reward=  17.4, Recent=  17.5, Buffer=1804
+Epoch   30: Meta-Loss=  0.5966, Avg Reward=  12.6, Recent=  14.9, Buffer=2550
+Epoch   40: Meta-Loss=  0.6187, Avg Reward=  11.0, Recent=  12.8, Buffer=3191
+
+============================================================
+Meta-training completed!
+Initial Avg Reward:   17.0
+Final Avg Reward:     11.7
+Best Epoch:           28.2
+============================================================
+
+
+=== [SUCCESS] Meta-training completed. Saving 'real model' weights... ===
+=== [SAVED] Filename: cartpole_hybrid_real_model.pth ===
+
+
+=== Test-Time Adaptation (HYBRID) ===
+Running a few test episodes to verify model performance...
+Test Results: Avg Reward = 9.4 ± 0.5
+============================================================
+
+
+=== Training and model saving completed successfully ===
+
