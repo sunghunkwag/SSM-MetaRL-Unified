@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
-"""
-Fixed SSM-MetaRL-Unified: Proper Reinforcement Learning Implementation
+""""Fixed SSM-MetaRL-Unified: Proper Reinforcement Learning Implementation
 
-Key fixes:
+Key features:
 1. Train policy to maximize rewards (not predict next state)
 2. Use policy gradient with SSM architecture
 3. Proper action selection from policy output
 4. Meta-learning for fast adaptation to new tasks
+5. Recursive Self-Improvement (RSI) - see app.py and rsi_daemon.py
+
+For RSI functionality:
+- Interactive: python app.py (Tab 3: Recursive Self-Improvement)
+- Background: ./rsi_control.sh start
+- See RSI_DEPLOYMENT.md and RSI_DAEMON_README.md for details
 """
 import argparse
 import torch
@@ -264,8 +269,8 @@ def main():
     
     # Training mode
     parser.add_argument('--mode', type=str, default='policy_gradient',
-                       choices=['policy_gradient', 'meta_rl'],
-                       help='Training mode: policy_gradient or meta_rl')
+                       choices=['policy_gradient', 'meta_rl', 'rsi'],
+                       help='Training mode: policy_gradient, meta_rl, or rsi (use app.py for RSI)')
     
     # Policy gradient settings
     parser.add_argument('--num_episodes', type=int, default=200,
@@ -339,6 +344,25 @@ def main():
         
         # Evaluate
         eval_rewards = evaluate_policy(model, env, device)
+    
+    elif args.mode == 'rsi':
+        print("\n" + "=" * 60)
+        print("RSI Mode - Recursive Self-Improvement")
+        print("=" * 60)
+        print("\nFor RSI functionality, please use:")
+        print("\n1. Interactive Mode (Gradio):")
+        print("   python app.py")
+        print("   Then go to Tab 3: Recursive Self-Improvement")
+        print("\n2. Background Daemon Mode:")
+        print("   ./rsi_control.sh start")
+        print("   ./rsi_control.sh status")
+        print("   ./rsi_control.sh logs")
+        print("   ./rsi_control.sh stop")
+        print("\n3. Documentation:")
+        print("   - RSI_DEPLOYMENT.md - Complete RSI guide")
+        print("   - RSI_DAEMON_README.md - Daemon usage")
+        print("\n" + "=" * 60)
+        return
     
     env.close()
     print("\n=== Training completed successfully ===")
