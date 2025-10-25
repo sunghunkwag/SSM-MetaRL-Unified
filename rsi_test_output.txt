@@ -1,0 +1,35 @@
+2025-10-25 16:33:41,669 - INFO - RecursiveSelfImprovementAgent initialized
+2025-10-25 16:33:41,669 - INFO - Evaluating performance (Generation 0, Quick: True)
+/home/ubuntu/SSM-MetaRL-Unified/recursive_self_improvement.py:444: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at /pytorch/torch/csrc/utils/tensor_new.cpp:253.)
+  obs_tensor = torch.tensor(obs, dtype=torch.float32).unsqueeze(0).to(self.device)
+Traceback (most recent call last):
+  File "/home/ubuntu/SSM-MetaRL-Unified/test_rsi.py", line 96, in test_rsi_basic
+    initial_metrics = rsi.evaluate_performance(quick_eval=True)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/SSM-MetaRL-Unified/recursive_self_improvement.py", line 444, in evaluate_performance
+    obs_tensor = torch.tensor(obs, dtype=torch.float32).unsqueeze(0).to(self.device)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: expected sequence of length 4 at dim 1 (got 0)
+Starting RSI Module Tests
+
+============================================================
+Testing Recursive Self-Improvement Module
+============================================================
+
+1. Initializing base model...
+✓ Model initialized with 6744 parameters
+
+2. Loading pre-trained weights...
+✓ Pre-trained weights loaded
+
+3. Initializing RSI system...
+✓ RSI system initialized
+
+4. Testing initial performance evaluation...
+✗ Initial evaluation failed: expected sequence of length 4 at dim 1 (got 0)
+
+============================================================
+❌ Tests failed
+============================================================
+
+Please fix the issues before deployment.
