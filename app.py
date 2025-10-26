@@ -9,10 +9,10 @@ import torch.nn.functional as F
 import numpy as np
 from pathlib import Path
 
-from models.ssm import StateSpaceModel
-from meta_learning.maml import MetaMAML
+from core.ssm import StateSpaceModel
+from meta_rl.meta_maml import MetaMAML
 from env_runner.environment import Environment
-from env_runner.experience_buffer import ExperienceBuffer
+from experience.experience_buffer import ExperienceBuffer
 from adaptation.standard_adapter import StandardAdapter, StandardAdaptationConfig
 from adaptation.hybrid_adapter import HybridAdapter, HybridAdaptationConfig
 
