@@ -68,8 +68,7 @@ def train_improved_model(
     meta_learner = MetaMAML(
         model=model,
         inner_lr=inner_lr,
-        outer_lr=outer_lr,
-        adaptation_steps=adaptation_steps
+        outer_lr=outer_lr
     )
     
     logger.info("Starting meta-training...")
