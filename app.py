@@ -168,8 +168,7 @@ def train_meta_rl(env_name, train_epochs, train_tasks, train_state_dim, train_hi
         meta_learner = MetaMAML(
             model=model,
             inner_lr=train_inner_lr,
-            outer_lr=train_outer_lr,
-            device='cpu'
+            outer_lr=train_outer_lr
         )
         
         output += "Starting meta-training...\n\n"
@@ -187,17 +186,19 @@ def train_meta_rl(env_name, train_epochs, train_tasks, train_state_dim, train_hi
                 for step in range(200):
                     obs_tensor = torch.FloatTensor(obs).unsqueeze(0)
                     action_logits, hidden = model(obs_tensor, hidden)
-                    action_probs = torch.softmax(action_logits, dim=-1)
+                    # Use only first 2 dimensions for CartPole (2 actions)
+                    action_logits_2d = action_logits[:, :2]
+                    action_probs = torch.softmax(action_logits_2d, dim=-1)
                     action = torch.multinomial(action_probs, 1).item()
                     
-                    next_obs, reward, done, truncated, info = env.step(action)
+                    next_obs, reward, done, info = env.step(action)
                     task_rewards.append(reward)
                     
                     # Store in experience buffer
-                    experience_buffer.add(obs, action, reward, next_obs, done or truncated)
+                    experience_buffer.add(obs, action, reward, next_obs, done)
                     
                     obs = next_obs
-                    if done or truncated:
+                    if done:
                         break
                 
                 epoch_rewards.append(sum(task_rewards))
@@ -244,21 +245,29 @@ def test_adaptation(env_name, model, experience_buffer, adaptation_mode, test_st
         
         # Initialize adapter
         if adaptation_mode == "standard":
+            from adaptation.standard_adapter import StandardAdaptationConfig
+            config = StandardAdaptationConfig(
+                learning_rate=test_lr,
+                num_steps=test_steps
+            )
             adapter = StandardAdapter(
                 model=model,
-                learning_rate=test_lr,
-                adaptation_steps=test_steps,
+                config=config,
                 device='cpu'
             )
         else:  # hybrid
+            from adaptation.hybrid_adapter import HybridAdaptationConfig
             if experience_buffer is None:
                 experience_buffer = ExperienceBuffer(max_size=10000, device='cpu')
+            config = HybridAdaptationConfig(
+                learning_rate=test_lr,
+                num_steps=test_steps,
+                experience_weight=test_exp_weight
+            )
             adapter = HybridAdapter(
                 model=model,
+                config=config,
                 experience_buffer=experience_buffer,
-                learning_rate=test_lr,
-                adaptation_steps=test_steps,
-                experience_weight=test_exp_weight,
                 device='cpu'
             )
         
@@ -277,14 +286,16 @@ def test_adaptation(env_name, model, experience_buffer, adaptation_mode, test_st
                 obs_tensor = torch.FloatTensor(obs).unsqueeze(0)
                 with torch.no_grad():
                     action_logits, hidden = model(obs_tensor, hidden)
-                action_probs = torch.softmax(action_logits, dim=-1)
+                # Use only first 2 dimensions for CartPole (2 actions)
+                action_logits_2d = action_logits[:, :2]
+                action_probs = torch.softmax(action_logits_2d, dim=-1)
                 action = torch.multinomial(action_probs, 1).item()
                 
-                next_obs, reward, done, truncated, info = env.step(action)
+                next_obs, reward, done, info = env.step(action)
                 episode_reward += reward
                 
                 obs = next_obs
-                if done or truncated:
+                if done:
                     break
             
             rewards_list.append(episode_reward)
