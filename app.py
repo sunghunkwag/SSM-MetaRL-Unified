@@ -131,18 +131,18 @@ def load_model_and_init_rsi():
         return None, None, error_msg
 
 
-def train_meta_rl(env_name, num_epochs, tasks_per_epoch, state_dim, hidden_dim, 
-                  inner_lr, outer_lr, gamma):
+def train_meta_rl(env_name, train_epochs, train_tasks, train_state_dim, train_hidden_dim, 
+                  train_inner_lr, train_outer_lr, train_gamma):
     """Train meta-RL model from scratch"""
     output = "=" * 60 + "\n"
     output += f"Meta-Training Started\n"
     output += "=" * 60 + "\n\n"
     output += f"Environment: {env_name}\n"
-    output += f"Epochs: {num_epochs}\n"
-    output += f"Tasks/Epoch: {tasks_per_epoch}\n"
-    output += f"State Dim: {state_dim}, Hidden Dim: {hidden_dim}\n"
-    output += f"Inner LR: {inner_lr}, Outer LR: {outer_lr}\n"
-    output += f"Gamma: {gamma}\n\n"
+    output += f"Epochs: {train_epochs}\n"
+    output += f"Tasks/Epoch: {train_tasks}\n"
+    output += f"State Dim: {train_state_dim}, Hidden Dim: {train_hidden_dim}\n"
+    output += f"Inner LR: {train_inner_lr}, Outer LR: {train_outer_lr}\n"
+    output += f"Gamma: {train_gamma}\n\n"
     
     try:
         # Initialize environment
@@ -155,10 +155,10 @@ def train_meta_rl(env_name, num_epochs, tasks_per_epoch, state_dim, hidden_dim,
         
         # Initialize model
         model = StateSpaceModel(
-            state_dim=state_dim,
+            state_dim=train_state_dim,
             input_dim=input_dim,
             output_dim=output_dim,
-            hidden_dim=hidden_dim
+            hidden_dim=train_hidden_dim
         )
         
         # Initialize experience buffer
@@ -167,18 +167,18 @@ def train_meta_rl(env_name, num_epochs, tasks_per_epoch, state_dim, hidden_dim,
         # Initialize MetaMAML
         meta_learner = MetaMAML(
             model=model,
-            inner_lr=inner_lr,
-            outer_lr=outer_lr,
+            inner_lr=train_inner_lr,
+            outer_lr=train_outer_lr,
             device='cpu'
         )
         
         output += "Starting meta-training...\n\n"
         
         # Meta-training loop
-        for epoch in range(num_epochs):
+        for epoch in range(train_epochs):
             epoch_rewards = []
             
-            for task_idx in range(tasks_per_epoch):
+            for task_idx in range(train_tasks):
                 # Collect task data
                 task_rewards = []
                 obs = env.reset()
@@ -206,7 +206,7 @@ def train_meta_rl(env_name, num_epochs, tasks_per_epoch, state_dim, hidden_dim,
             avg_reward = np.mean(epoch_rewards)
             
             if (epoch + 1) % 10 == 0:
-                output += f"Epoch {epoch + 1}/{num_epochs}: Avg Reward = {avg_reward:.2f}\n"
+                output += f"Epoch {epoch + 1}/{train_epochs}: Avg Reward = {avg_reward:.2f}\n"
         
         output += "\n" + "=" * 60 + "\n"
         output += "Meta-Training Complete!\n"
@@ -221,8 +221,8 @@ def train_meta_rl(env_name, num_epochs, tasks_per_epoch, state_dim, hidden_dim,
         return f"❌ Error during meta-training:\n{str(e)}\n\n{traceback.format_exc()}", None, None
 
 
-def test_adaptation(env_name, model, experience_buffer, adaptation_mode, state_dim, hidden_dim,
-                   lr, steps, exp_weight):
+def test_adaptation(env_name, model, experience_buffer, adaptation_mode, test_state_dim, test_hidden_dim,
+                   test_lr, test_steps, test_exp_weight):
     """Test model with adaptation"""
     if model is None:
         return "❌ Error: Please load pre-trained model or complete meta-training first!"
@@ -232,10 +232,10 @@ def test_adaptation(env_name, model, experience_buffer, adaptation_mode, state_d
     output += "=" * 60 + "\n\n"
     output += f"Environment: {env_name}\n"
     output += f"Mode: {adaptation_mode}\n"
-    output += f"Adaptation Steps: {steps}\n"
-    output += f"Learning Rate: {lr}\n"
+    output += f"Adaptation Steps: {test_steps}\n"
+    output += f"Learning Rate: {test_lr}\n"
     if adaptation_mode == "hybrid":
-        output += f"Experience Weight: {exp_weight}\n"
+        output += f"Experience Weight: {test_exp_weight}\n"
     output += "\n"
     
     try:
@@ -246,8 +246,8 @@ def test_adaptation(env_name, model, experience_buffer, adaptation_mode, state_d
         if adaptation_mode == "standard":
             adapter = StandardAdapter(
                 model=model,
-                learning_rate=lr,
-                adaptation_steps=steps,
+                learning_rate=test_lr,
+                adaptation_steps=test_steps,
                 device='cpu'
             )
         else:  # hybrid
@@ -256,9 +256,9 @@ def test_adaptation(env_name, model, experience_buffer, adaptation_mode, state_d
             adapter = HybridAdapter(
                 model=model,
                 experience_buffer=experience_buffer,
-                learning_rate=lr,
-                adaptation_steps=steps,
-                experience_weight=exp_weight,
+                learning_rate=test_lr,
+                adaptation_steps=test_steps,
+                experience_weight=test_exp_weight,
                 device='cpu'
             )
         
