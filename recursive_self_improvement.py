@@ -169,7 +169,12 @@ class TaskGenerator:
                     action = action_logits.cpu().numpy().flatten()
                     action += np.random.normal(0, 0.1, action.shape)  # Add noise
             
-            next_obs, reward, done, info = self.env.step(action)
+            step_result = self.env.step(action)
+            if len(step_result) == 5:
+                next_obs, reward, done, truncated, info = step_result
+                done = done or truncated
+            else:
+                next_obs, reward, done, info = step_result
             
             observations.append(obs_tensor)
             actions.append(action)
@@ -438,13 +443,16 @@ class RecursiveSelfImprovementAgent:
         for ep in range(num_episodes):
             reset_result = self.env.reset()
             obs = reset_result[0] if isinstance(reset_result, tuple) else reset_result
+            # Ensure obs is a numpy array
+            obs = np.array(obs, dtype=np.float32)
             hidden_state = self.model.init_hidden(batch_size=1)
             total_reward = 0
             steps = 0
             done = False
             
             while not done and steps < 500:
-                obs_tensor = torch.tensor(obs, dtype=torch.float32).unsqueeze(0).to(self.device)
+                # Convert observation to tensor properly
+                obs_tensor = torch.from_numpy(obs).float().unsqueeze(0).to(self.device)
                 
                 with torch.no_grad():
                     action_logits, hidden_state = self.model(obs_tensor, hidden_state)

@@ -30,7 +30,7 @@ from recursive_self_improvement import (
 global_rsi_agent = None
 
 # Pre-trained model configuration
-PRETRAINED_MODEL_PATH = "cartpole_hybrid_real_model.pth"
+PRETRAINED_MODEL_PATH = "models/cartpole_hybrid_real_model.pth"
 PRETRAINED_CONFIG = {
     'env_name': 'CartPole-v1',
     'state_dim': 32,
@@ -109,12 +109,9 @@ def load_model_and_init_rsi():
         global_rsi_agent = RecursiveSelfImprovementAgent(
             initial_model=model,
             env=env,
-            experience_buffer=experience_buffer,
             device='cpu',
             rsi_config=rsi_config,
-            safety_config=safety_config,
-            arch_config=arch_config,
-            learn_config=learn_config
+            safety_config=safety_config
         )
         
         output += "✅ RSI System initialized!\n\n"
